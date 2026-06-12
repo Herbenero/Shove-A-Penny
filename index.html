@@ -89,6 +89,12 @@
             margin: 15px 0;
             text-align: left;
             display: inline-block;
+            min-width: 200px;
+        }
+
+        .player-list-setup ol {
+            color: white;
+            font-size: 18px;
         }
 
         /* Game Interface Layout */
@@ -201,12 +207,6 @@
             margin-top: 10px;
             display: none;
             font-weight: bold;
-            animation: flash 0.5s alternate infinite;
-        }
-
-        @keyframes flash {
-            from { opacity: 0.8; }
-            to { opacity: 1; }
         }
     </style>
 </head>
@@ -220,7 +220,7 @@
     <div id="setup-screen" class="setup-screen active">
         <h2>Game Setup</h2>
         <div>
-            <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off">
+            <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off" onkeypress="handleKeyPress(event)">
             <button onclick="addPlayer()">Add Player</button>
         </div>
         <div class="player-list-setup">
@@ -276,4 +276,223 @@
 <script>
     // Game Rules Config
     const TARGETS = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 'B'];
-    const MAX_
+    const MAX_HITS = 3;
+
+    // State Variables
+    let players = [];
+    let currentPlayerIndex = 0;
+    let currentDart = 1;
+    let currentMultiplier = 1;
+
+    // Initialize Input Pad UI
+    function initInputPad() {
+        const container = document.getElementById('hit-buttons-container');
+        container.innerHTML = '';
+        
+        TARGETS.forEach(target => {
+            if(target !== 'B') {
+                const btn = document.createElement('button');
+                btn.innerText = target;
+                btn.onclick = () => handleHit(target);
+                container.appendChild(btn);
+            }
+        });
+
+        const bullBtn = document.createElement('button');
+        bullBtn.innerText = '🎯 Bullseye';
+        bullBtn.className = 'bullseye';
+        bullBtn.onclick = () => handleHit('B');
+        container.appendChild(bullBtn);
+
+        const missBtn = document.createElement('button');
+        missBtn.innerText = '❌ Miss';
+        missBtn.className = 'miss';
+        missBtn.onclick = () => handleHit('Miss');
+        container.appendChild(missBtn);
+    }
+
+    // Allow pressing "Enter" to add players quickly
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            addPlayer();
+        }
+    }
+
+    // Player Management
+    function addPlayer() {
+        const input = document.getElementById('player-name-input');
+        const name = input.value.trim();
+        
+        if (name === '') return;
+        
+        let initialHits = {};
+        TARGETS.forEach(t => initialHits[t] = 0);
+
+        players.push({
+            name: name,
+            hits: initialHits
+        });
+
+        input.value = '';
+        updateSetupList();
+
+        // Show start button if we have at least 1 player (ideally 2+ for shove a penny)
+        if (players.length >= 1) {
+            document.getElementById('start-game-btn').style.display = 'inline-block';
+        }
+        input.focus();
+    }
+
+    function updateSetupList() {
+        const ol = document.getElementById('player-list-ol');
+        ol.innerHTML = '';
+        players.forEach(p => {
+            const li = document.createElement('li');
+            li.innerText = p.name;
+            ol.appendChild(li);
+        });
+    }
+
+    function setMultiplier(m) {
+        currentMultiplier = m;
+        document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById(`m${m}`).classList.add('selected');
+    }
+
+    // Core Game Logic
+    function startGame() {
+        if (players.length === 0) return;
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+        initInputPad();
+        renderScoreboard();
+        updateTurnDisplay();
+    }
+
+    function handleHit(target) {
+        const alertBox = document.getElementById('shove-alert');
+        alertBox.style.display = 'none';
+
+        if (target !== 'Miss') {
+            let hitsToAdd = currentMultiplier;
+            if (target === 'B' && currentMultiplier === 3) {
+                hitsToAdd = 2; // Hard cap double bull rule
+            }
+            processHitSequence(currentPlayerIndex, target, hitsToAdd);
+        }
+
+        // Advance Turn System
+        currentDart++;
+        if (currentDart > 3) {
+            currentDart = 1;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        }
+
+        setMultiplier(1);
+        checkWinCondition();
+        renderScoreboard();
+        updateTurnDisplay();
+    }
+
+    function processHitSequence(startingPlayerIdx, target, hitsRemaining) {
+        let loopCounter = 0;
+        let currentIdx = startingPlayerIdx;
+
+        while (hitsRemaining > 0 && loopCounter < players.length) {
+            let player = players[currentIdx];
+            let currentHits = player.hits[target];
+
+            if (currentHits < MAX_HITS) {
+                let spaceLeft = MAX_HITS - currentHits;
+                let hitsApplied = Math.min(spaceLeft, hitsRemaining);
+                
+                player.hits[target] += hitsApplied;
+                hitsRemaining -= hitsApplied;
+
+                if (currentIdx !== startingPlayerIdx) {
+                    const alertBox = document.getElementById('shove-alert');
+                    alertBox.innerText = `💥 Shoved point on [${target === 'B' ? 'Bull' : target}] to ${player.name}!`;
+                    alertBox.style.display = 'block';
+                }
+            }
+            currentIdx = (currentIdx + 1) % players.length;
+            loopCounter++;
+        }
+    }
+
+    function checkWinCondition() {
+        players.forEach(player => {
+            let allClosed = TARGETS.every(target => player.hits[target] >= MAX_HITS);
+            if (allClosed) {
+                document.getElementById('game-screen').classList.remove('active');
+                document.getElementById('winner-screen').classList.add('active');
+                document.getElementById('winner-name-display').innerText = player.name;
+            }
+        });
+    }
+
+    function updateTurnDisplay() {
+        document.getElementById('current-player-display').innerText = `${players[currentPlayerIndex].name}'s Turn`;
+        document.getElementById('dot1').className = `dot ${currentDart >= 1 ? 'active' : ''}`;
+        document.getElementById('dot2').className = `dot ${currentDart >= 2 ? 'active' : ''}`;
+        document.getElementById('dot3').className = `dot ${currentDart >= 3 ? 'active' : ''}`;
+    }
+
+    function renderScoreboard() {
+        const table = document.getElementById('scoreboard-table');
+        table.innerHTML = '';
+
+        let headerRow = '<tr><th>Target</th>';
+        players.forEach((p, index) => {
+            let activeClass = (index === currentPlayerIndex) ? 'class="current-player-col"' : '';
+            headerRow += `<th ${activeClass}>${p.name}</th>`;
+        });
+        headerRow += '</tr>';
+        table.innerHTML += headerRow;
+
+        TARGETS.forEach(target => {
+            let row = `<tr><td><strong>${target === 'B' ? '🎯 Bull' : target}</strong></td>`;
+            
+            players.forEach((p, pIdx) => {
+                let hits = p.hits[target];
+                let displayValue = '';
+                let cellClass = '';
+
+                if (hits === 1) displayValue = '╱';
+                else if (hits === 2) displayValue = '╳';
+                else if (hits >= 3) {
+                    displayValue = '⨂ CLOSED';
+                    cellClass = 'class="closed-cell"';
+                } else {
+                    displayValue = '•';
+                }
+
+                if(pIdx === currentPlayerIndex && !cellClass.includes('closed-cell')) {
+                    cellClass = 'class="current-player-col"';
+                } else if (pIdx === currentPlayerIndex && cellClass.includes('closed-cell')) {
+                    cellClass = 'class="closed-cell current-player-col"';
+                }
+
+                row += `<td ${cellClass}>${displayValue}</td>`;
+            });
+            row += '</tr>';
+            table.innerHTML += row;
+        });
+    }
+
+    function resetGame() {
+        players = [];
+        currentPlayerIndex = 0;
+        currentDart = 1;
+        setMultiplier(1);
+        
+        document.getElementById('player-list-ol').innerHTML = '';
+        document.getElementById('start-game-btn').style.display = 'none';
+        
+        document.getElementById('winner-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('setup-screen').classList.add('active');
+    }
+</script>
+</body>
+</html>
