@@ -85,16 +85,16 @@
             transform: scale(1.02);
         }
 
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+            transform: none;
+        }
+
         .player-list-setup {
             margin: 15px 0;
             text-align: left;
             display: inline-block;
-            min-width: 200px;
-        }
-
-        .player-list-setup ol {
-            color: white;
-            font-size: 18px;
         }
 
         /* Game Interface Layout */
@@ -156,6 +156,14 @@
             font-weight: bold;
         }
 
+        .game-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
         /* Input Controls */
         .input-pad {
             display: grid;
@@ -207,6 +215,12 @@
             margin-top: 10px;
             display: none;
             font-weight: bold;
+            animation: flash 0.5s alternate infinite;
+        }
+
+        @keyframes flash {
+            from { opacity: 0.8; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -220,7 +234,7 @@
     <div id="setup-screen" class="setup-screen active">
         <h2>Game Setup</h2>
         <div>
-            <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off" onkeypress="handleKeyPress(event)">
+            <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off">
             <button onclick="addPlayer()">Add Player</button>
         </div>
         <div class="player-list-setup">
@@ -260,15 +274,23 @@
                 </table>
         </div>
         
-        <br>
-        <button onclick="resetGame()" style="background-color: #444; color: white;">Restart Game</button>
+        <div class="game-actions">
+            <button id="undo-score-btn" onclick="undoLastScore()" style="background-color: #2ec4b6; color: black;" disabled>Undo Score</button>
+            <button onclick="resetGame()" style="background-color: #444; color: white;">Restart Game</button>
+        </div>
     </div>
 
     <div id="winner-screen" class="winner-screen">
         <h1 style="font-size: 45px; color: var(--success);">🏆 Winner! 🏆</h1>
         <h2 id="winner-name-display" style="font-size: 32px; color: white;">Player</h2>
         <p>Has successfully shoved all their pennies and closed all targets!</p>
+        <h3>Final Scoreboard</h3>
+        <div class="grid-container">
+            <table id="final-scoreboard-table">
+                </table>
+        </div>
         <br>
+        <button onclick="undoLastScore()" style="background-color: #2ec4b6; color: black; font-size: 20px; padding: 15px 30px;">Undo Last Score</button>
         <button onclick="resetGame()" style="font-size: 20px; padding: 15px 30px;">Play Again</button>
     </div>
 </div>
@@ -278,221 +300,247 @@
     const TARGETS = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 'B'];
     const MAX_HITS = 3;
 
-    // State Variables
     let players = [];
     let currentPlayerIndex = 0;
     let currentDart = 1;
-    let currentMultiplier = 1;
+    let selectedMultiplier = 1;
+    let history = [];
+    let shoveMessage = '';
 
-    // Initialize Input Pad UI
-    function initInputPad() {
-        const container = document.getElementById('hit-buttons-container');
-        container.innerHTML = '';
-        
-        TARGETS.forEach(target => {
-            if(target !== 'B') {
-                const btn = document.createElement('button');
-                btn.innerText = target;
-                btn.onclick = () => handleHit(target);
-                container.appendChild(btn);
-            }
-        });
-
-        const bullBtn = document.createElement('button');
-        bullBtn.innerText = '🎯 Bullseye';
-        bullBtn.className = 'bullseye';
-        bullBtn.onclick = () => handleHit('B');
-        container.appendChild(bullBtn);
-
-        const missBtn = document.createElement('button');
-        missBtn.innerText = '❌ Miss';
-        missBtn.className = 'miss';
-        missBtn.onclick = () => handleHit('Miss');
-        container.appendChild(missBtn);
-    }
-
-    // Allow pressing "Enter" to add players quickly
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            addPlayer();
-        }
-    }
-
-    // Player Management
     function addPlayer() {
         const input = document.getElementById('player-name-input');
         const name = input.value.trim();
-        
-        if (name === '') return;
-        
-        let initialHits = {};
-        TARGETS.forEach(t => initialHits[t] = 0);
+
+        if (!name) return;
 
         players.push({
-            name: name,
-            hits: initialHits
+            name,
+            scores: Object.fromEntries(TARGETS.map(target => [target, 0]))
         });
 
         input.value = '';
-        updateSetupList();
-
-        // Show start button if we have at least 1 player (ideally 2+ for shove a penny)
-        if (players.length >= 1) {
-            document.getElementById('start-game-btn').style.display = 'inline-block';
-        }
+        renderSetupPlayers();
+        document.getElementById('start-game-btn').style.display = players.length >= 2 ? 'inline-block' : 'none';
         input.focus();
     }
 
-    function updateSetupList() {
-        const ol = document.getElementById('player-list-ol');
-        ol.innerHTML = '';
-        players.forEach(p => {
-            const li = document.createElement('li');
-            li.innerText = p.name;
-            ol.appendChild(li);
+    function renderSetupPlayers() {
+        const list = document.getElementById('player-list-ol');
+        list.innerHTML = players.map(player => `<li>${escapeHtml(player.name)}</li>`).join('');
+    }
+
+    function startGame() {
+        if (players.length < 2) return;
+
+        currentPlayerIndex = 0;
+        currentDart = 1;
+        selectedMultiplier = 1;
+        history = [];
+
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('winner-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+
+        buildHitButtons();
+        setMultiplier(1);
+        updateGameView();
+    }
+
+    function buildHitButtons() {
+        const container = document.getElementById('hit-buttons-container');
+        container.innerHTML = TARGETS.map(target => {
+            const className = target === 'B' ? ' class="bullseye"' : '';
+            const label = target === 'B' ? 'Bull' : target;
+            return `<button${className} onclick="recordHit('${target}')">${label}</button>`;
+        }).join('') + '<button class="miss" onclick="recordMiss()">Miss</button>';
+    }
+
+    function setMultiplier(multiplier) {
+        selectedMultiplier = multiplier;
+        [1, 2, 3].forEach(value => {
+            document.getElementById(`m${value}`).classList.toggle('selected', value === multiplier);
         });
     }
 
-    function setMultiplier(m) {
-        currentMultiplier = m;
-        document.querySelectorAll('.mult-btn').forEach(b => b.classList.remove('selected'));
-        document.getElementById(`m${m}`).classList.add('selected');
+    function recordHit(target) {
+        shoveMessage = '';
+        saveHistory();
+        applyHits(currentPlayerIndex, target, selectedMultiplier);
+        completeDart();
     }
 
-    // Core Game Logic
-    function startGame() {
-        if (players.length === 0) return;
-        document.getElementById('setup-screen').classList.remove('active');
-        document.getElementById('game-screen').classList.add('active');
-        initInputPad();
-        renderScoreboard();
-        updateTurnDisplay();
+    function recordMiss() {
+        shoveMessage = '';
+        saveHistory();
+        completeDart();
     }
 
-    function handleHit(target) {
-        const alertBox = document.getElementById('shove-alert');
-        alertBox.style.display = 'none';
+    function applyHits(playerIndex, target, hits) {
+        const player = players[playerIndex];
+        const currentHits = player.scores[target];
+        const room = MAX_HITS - currentHits;
+        const keptHits = Math.min(room, hits);
+        const extraHits = hits - keptHits;
 
-        if (target !== 'Miss') {
-            let hitsToAdd = currentMultiplier;
-            if (target === 'B' && currentMultiplier === 3) {
-                hitsToAdd = 2; // Hard cap double bull rule
-            }
-            processHitSequence(currentPlayerIndex, target, hitsToAdd);
+        player.scores[target] += keptHits;
+
+        if (extraHits > 0) {
+            shoveHits(playerIndex, target, extraHits);
+        }
+    }
+
+    function shoveHits(fromPlayerIndex, target, hits) {
+        const alert = document.getElementById('shove-alert');
+        const shovedTo = [];
+        let remaining = hits;
+
+        for (let offset = 1; offset < players.length && remaining > 0; offset++) {
+            const nextIndex = (fromPlayerIndex + offset) % players.length;
+            const nextPlayer = players[nextIndex];
+            const room = MAX_HITS - nextPlayer.scores[target];
+
+            if (room <= 0) continue;
+
+            const given = Math.min(room, remaining);
+            nextPlayer.scores[target] += given;
+            remaining -= given;
+            shovedTo.push(`${given} to ${nextPlayer.name}`);
         }
 
-        // Advance Turn System
-        currentDart++;
-        if (currentDart > 3) {
+        if (shovedTo.length) {
+            shoveMessage = `Shoved ${target}: ${shovedTo.join(', ')}`;
+        }
+    }
+
+    function completeDart() {
+        if (hasWon(players[currentPlayerIndex])) {
+            showWinner(players[currentPlayerIndex]);
+            return;
+        }
+
+        if (currentDart >= 3) {
             currentDart = 1;
             currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        } else {
+            currentDart++;
         }
 
         setMultiplier(1);
-        checkWinCondition();
-        renderScoreboard();
-        updateTurnDisplay();
+        updateGameView();
     }
 
-    function processHitSequence(startingPlayerIdx, target, hitsRemaining) {
-        let loopCounter = 0;
-        let currentIdx = startingPlayerIdx;
+    function undoLastScore() {
+        const previous = history.pop();
+        if (!previous) return;
 
-        while (hitsRemaining > 0 && loopCounter < players.length) {
-            let player = players[currentIdx];
-            let currentHits = player.hits[target];
+        players = previous.players;
+        currentPlayerIndex = previous.currentPlayerIndex;
+        currentDart = previous.currentDart;
+        selectedMultiplier = previous.selectedMultiplier;
+        shoveMessage = '';
 
-            if (currentHits < MAX_HITS) {
-                let spaceLeft = MAX_HITS - currentHits;
-                let hitsApplied = Math.min(spaceLeft, hitsRemaining);
-                
-                player.hits[target] += hitsApplied;
-                hitsRemaining -= hitsApplied;
-
-                if (currentIdx !== startingPlayerIdx) {
-                    const alertBox = document.getElementById('shove-alert');
-                    alertBox.innerText = `💥 Shoved point on [${target === 'B' ? 'Bull' : target}] to ${player.name}!`;
-                    alertBox.style.display = 'block';
-                }
-            }
-            currentIdx = (currentIdx + 1) % players.length;
-            loopCounter++;
-        }
+        document.getElementById('winner-screen').classList.remove('active');
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+        updateGameView();
     }
 
-    function checkWinCondition() {
-        players.forEach(player => {
-            let allClosed = TARGETS.every(target => player.hits[target] >= MAX_HITS);
-            if (allClosed) {
-                document.getElementById('game-screen').classList.remove('active');
-                document.getElementById('winner-screen').classList.add('active');
-                document.getElementById('winner-name-display').innerText = player.name;
-            }
+    function saveHistory() {
+        history.push({
+            players: clonePlayers(players),
+            currentPlayerIndex,
+            currentDart,
+            selectedMultiplier
         });
     }
 
-    function updateTurnDisplay() {
-        document.getElementById('current-player-display').innerText = `${players[currentPlayerIndex].name}'s Turn`;
-        document.getElementById('dot1').className = `dot ${currentDart >= 1 ? 'active' : ''}`;
-        document.getElementById('dot2').className = `dot ${currentDart >= 2 ? 'active' : ''}`;
-        document.getElementById('dot3').className = `dot ${currentDart >= 3 ? 'active' : ''}`;
+    function clonePlayers(playerList) {
+        return playerList.map(player => ({
+            name: player.name,
+            scores: { ...player.scores }
+        }));
     }
 
-    function renderScoreboard() {
-        const table = document.getElementById('scoreboard-table');
-        table.innerHTML = '';
+    function updateGameView() {
+        document.getElementById('current-player-display').textContent = `${players[currentPlayerIndex].name}'s Turn`;
+        const alert = document.getElementById('shove-alert');
+        alert.textContent = shoveMessage;
+        alert.style.display = shoveMessage ? 'block' : 'none';
+        document.getElementById('undo-score-btn').disabled = history.length === 0;
 
-        let headerRow = '<tr><th>Target</th>';
-        players.forEach((p, index) => {
-            let activeClass = (index === currentPlayerIndex) ? 'class="current-player-col"' : '';
-            headerRow += `<th ${activeClass}>${p.name}</th>`;
+        [1, 2, 3].forEach(value => {
+            document.getElementById(`dot${value}`).classList.toggle('active', value >= currentDart);
         });
-        headerRow += '</tr>';
-        table.innerHTML += headerRow;
 
-        TARGETS.forEach(target => {
-            let row = `<tr><td><strong>${target === 'B' ? '🎯 Bull' : target}</strong></td>`;
-            
-            players.forEach((p, pIdx) => {
-                let hits = p.hits[target];
-                let displayValue = '';
-                let cellClass = '';
+        setMultiplier(selectedMultiplier);
+        renderScoreboard('scoreboard-table');
+    }
 
-                if (hits === 1) displayValue = '╱';
-                else if (hits === 2) displayValue = '╳';
-                else if (hits >= 3) {
-                    displayValue = '⨂ CLOSED';
-                    cellClass = 'class="closed-cell"';
-                } else {
-                    displayValue = '•';
-                }
+    function renderScoreboard(tableId) {
+        const table = document.getElementById(tableId);
+        const header = [
+            '<tr><th>Target</th>',
+            ...players.map((player, index) => `<th class="${index === currentPlayerIndex ? 'current-player-col' : ''}">${escapeHtml(player.name)}</th>`),
+            '</tr>'
+        ].join('');
 
-                if(pIdx === currentPlayerIndex && !cellClass.includes('closed-cell')) {
-                    cellClass = 'class="current-player-col"';
-                } else if (pIdx === currentPlayerIndex && cellClass.includes('closed-cell')) {
-                    cellClass = 'class="closed-cell current-player-col"';
-                }
+        const rows = TARGETS.map(target => {
+            const label = target === 'B' ? 'Bull' : target;
+            const cells = players.map((player, index) => {
+                const hits = player.scores[target];
+                const marks = hits >= MAX_HITS ? 'Closed' : '●'.repeat(hits);
+                const classes = [
+                    hits >= MAX_HITS ? 'closed-cell' : '',
+                    index === currentPlayerIndex ? 'current-player-col' : ''
+                ].filter(Boolean).join(' ');
 
-                row += `<td ${cellClass}>${displayValue}</td>`;
-            });
-            row += '</tr>';
-            table.innerHTML += row;
-        });
+                return `<td class="${classes}">${marks || '-'}</td>`;
+            }).join('');
+
+            return `<tr><th>${label}</th>${cells}</tr>`;
+        }).join('');
+
+        table.innerHTML = header + rows;
+    }
+
+    function hasWon(player) {
+        return TARGETS.every(target => player.scores[target] >= MAX_HITS);
+    }
+
+    function showWinner(player) {
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('winner-screen').classList.add('active');
+        document.getElementById('winner-name-display').textContent = player.name;
+        renderScoreboard('final-scoreboard-table');
     }
 
     function resetGame() {
         players = [];
         currentPlayerIndex = 0;
         currentDart = 1;
-        setMultiplier(1);
-        
+        selectedMultiplier = 1;
+        history = [];
+        shoveMessage = '';
+
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('winner-screen').classList.remove('active');
+        document.getElementById('setup-screen').classList.add('active');
+        document.getElementById('player-name-input').value = '';
         document.getElementById('player-list-ol').innerHTML = '';
         document.getElementById('start-game-btn').style.display = 'none';
-        
-        document.getElementById('winner-screen').classList.remove('active');
-        document.getElementById('game-screen').classList.remove('active');
-        document.getElementById('setup-screen').classList.add('active');
     }
+
+    function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value;
+        return div.innerHTML;
+    }
+
+    document.getElementById('player-name-input').addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            addPlayer();
+        }
+    });
 </script>
 </body>
 </html>
