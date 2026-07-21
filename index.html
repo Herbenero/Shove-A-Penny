@@ -36,6 +36,24 @@
             border: 1px solid #333;
         }
 
+        .header-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.title-logo {
+  height: 48px; /* Adjust height as needed to fit your heading size */
+  width: auto;
+  object-fit: contain;
+}
+
+/* Optional: if you no longer need the big centered logo container */
+.logo-container {
+  display: none;
+}
         .logo-container img {
             max-width: 250px;
             height: auto;
@@ -227,9 +245,10 @@
 <body>
 
 <div class="container">
-    <div class="logo-container">
-        <img src="R7qT56q5.jpg" alt="Shove a Penny Logo">
-    </div>
+  <div class="header-title-container">
+    <img src="ShoveaPenny4.png" alt="Shove a Penny Logo" class="title-logo">
+    <h1>Shove a Penny</h1>
+  </div>
 
     <div id="setup-screen" class="setup-screen active">
         <h2>Game Setup</h2>
