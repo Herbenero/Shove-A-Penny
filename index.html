@@ -481,12 +481,22 @@
     renderScoreboard('final-scoreboard-table');
     
     const finalTable = document.getElementById('final-scoreboard-table');
+
+    // Header row identifying player names for the summary section
+    const summaryHeaderRow = `
+      <tr style="border-top: 3px solid var(--accent-color); background-color: #0b0c10;">
+        <th>Stat Summary</th>
+        ${players.map(p => `<th style="color: var(--accent-color);">${escapeHtml(p.name)}</th>`).join('')}
+      </tr>
+    `;
+
     const totalMarksRow = `
-      <tr style="border-top: 2px solid var(--accent-color); font-weight: bold;">
+      <tr style="font-weight: bold;">
         <th>Total Marks</th>
         ${players.map(p => `<td>${p.totalMarks}</td>`).join('')}
       </tr>
     `;
+
     const penniesPushedRow = `
       <tr style="font-weight: bold; color: var(--accent-color);">
         <th>Pennies Pushed</th>
@@ -494,7 +504,7 @@
       </tr>
     `;
 
-    finalTable.innerHTML += totalMarksRow + penniesPushedRow;
+    finalTable.innerHTML += summaryHeaderRow + totalMarksRow + penniesPushedRow;
   }
 
   function renderScoreboard(tableId) {
