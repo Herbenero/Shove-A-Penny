@@ -334,7 +334,8 @@
       name,
       scores: Object.fromEntries(TARGETS.map(target => [target, 0])),
       totalMarks: 0,
-      penniesPushed: 0
+      penniesPushed: 0,
+      penniesReceived: 0
     });
     input.value = '';
     renderSetupPlayers();
@@ -384,7 +385,8 @@
     const keptHits = Math.min(room, hits);
     const extraHits = hits - keptHits;
 
-    player.totalMarks += hits; 
+    // Track ONLY marks applied to own board (excludes shoved extra hits)
+    player.totalMarks += keptHits; 
     player.scores[target] += keptHits;
 
     if (extraHits > 0) {
@@ -405,7 +407,10 @@
 
       const given = Math.min(room, remaining);
       nextPlayer.scores[target] += given;
+      
+      // Track stats for pushed and received pennies
       shoveSourcePlayer.penniesPushed += given;
+      nextPlayer.penniesReceived += given;
 
       remaining -= given;
       shovedTo.push(`${given} to ${nextPlayer.name}`);
@@ -450,7 +455,8 @@
       name: player.name,
       scores: { ...player.scores },
       totalMarks: player.totalMarks,
-      penniesPushed: player.penniesPushed
+      penniesPushed: player.penniesPushed,
+      penniesReceived: player.penniesReceived
     }));
   }
 
@@ -501,7 +507,6 @@
     
     const finalTable = document.getElementById('final-scoreboard-table');
 
-    // Header row identifying player names for the summary section
     const summaryHeaderRow = `
       <tr style="border-top: 3px solid var(--accent-color); background-color: #0b0c10;">
         <th>Stat Summary</th>
@@ -523,7 +528,14 @@
       </tr>
     `;
 
-    finalTable.innerHTML += summaryHeaderRow + totalMarksRow + penniesPushedRow;
+    const penniesReceivedRow = `
+      <tr style="font-weight: bold; color: var(--success);">
+        <th>Pennies Received</th>
+        ${players.map(p => `<td>${p.penniesReceived}</td>`).join('')}
+      </tr>
+    `;
+
+    finalTable.innerHTML += summaryHeaderRow + totalMarksRow + penniesPushedRow + penniesReceivedRow;
   }
 
   function renderScoreboard(tableId) {
