@@ -308,21 +308,20 @@
     let shoveMessage = '';
 
     function addPlayer() {
-        const input = document.getElementById('player-name-input');
-        const name = input.value.trim();
-
-        if (!name) return;
-
-        players.push({
-            name,
-            scores: Object.fromEntries(TARGETS.map(target => [target, 0]))
-        });
-
-        input.value = '';
-        renderSetupPlayers();
-        document.getElementById('start-game-btn').style.display = players.length >= 2 ? 'inline-block' : 'none';
-        input.focus();
-    }
+  const input = document.getElementById('player-name-input');
+  const name = input.value.trim();
+  if (!name) return;
+  players.push({
+    name,
+    scores: Object.fromEntries(TARGETS.map(target => [target, 0])),
+    totalMarks: 0,
+    penniesPushed: 0
+  });
+  input.value = '';
+  renderSetupPlayers();
+  document.getElementById('start-game-btn').style.display = players.length >= 2 ? 'inline-block' : 'none';
+  input.focus();
+}
 
     function renderSetupPlayers() {
         const list = document.getElementById('player-list-ol');
@@ -362,6 +361,47 @@
         });
     }
 
+    function applyHits(playerIndex, target, hits) {
+  const player = players[playerIndex];
+  const currentHits = player.scores[target];
+  const room = MAX_HITS - currentHits;
+  const keptHits = Math.min(room, hits);
+  const extraHits = hits - keptHits;
+
+  // Track total marks scored directly by the active player
+  player.totalMarks += hits; 
+
+  player.scores[target] += keptHits;
+  if (extraHits > 0) {
+    shoveHits(playerIndex, target, extraHits);
+  }
+}
+
+function shoveHits(fromPlayerIndex, target, hits) {
+  const shoveSourcePlayer = players[fromPlayerIndex];
+  const shovedTo = [];
+  let remaining = hits;
+
+  for (let offset = 1; offset < players.length && remaining > 0; offset++) {
+    const nextIndex = (fromPlayerIndex + offset) % players.length;
+    const nextPlayer = players[nextIndex];
+    const room = MAX_HITS - nextPlayer.scores[target];
+    if (room <= 0) continue;
+
+    const given = Math.min(room, remaining);
+    nextPlayer.scores[target] += given;
+    
+    // Track total pennies shoved by the throwing player
+    shoveSourcePlayer.penniesPushed += given;
+
+    remaining -= given;
+    shovedTo.push(`${given} to ${nextPlayer.name}`);
+  }
+
+  if (shovedTo.length) {
+    shoveMessage = `Shoved ${target}: ${shovedTo.join(', ')}`;
+  }
+}
     function recordHit(target) {
         shoveMessage = '';
         saveHistory();
@@ -369,6 +409,14 @@
         completeDart();
     }
 
+    function clonePlayers(playerList) {
+  return playerList.map(player => ({
+    name: player.name,
+    scores: { ...player.scores },
+    totalMarks: player.totalMarks,
+    penniesPushed: player.penniesPushed
+  }));
+}
     function recordMiss() {
         shoveMessage = '';
         saveHistory();
@@ -476,6 +524,33 @@
         renderScoreboard('scoreboard-table');
     }
 
+    function showWinner(player) {
+  document.getElementById('game-screen').classList.remove('active');
+  document.getElementById('winner-screen').classList.add('active');
+  document.getElementById('winner-name-display').textContent = player.name;
+  
+  // Render base target scoreboard
+  renderScoreboard('final-scoreboard-table');
+  
+  // Append stat rows to the final scoreboard
+  const finalTable = document.getElementById('final-scoreboard-table');
+  
+  const totalMarksRow = `
+    <tr style="border-top: 2px solid var(--accent-color); font-weight: bold;">
+      <th>Total Marks</th>
+      ${players.map(p => `<td>${p.totalMarks}</td>`).join('')}
+    </tr>
+  `;
+  
+  const penniesPushedRow = `
+    <tr style="font-weight: bold; color: var(--accent-color);">
+      <th>Pennies Pushed</th>
+      ${players.map(p => `<td>${p.penniesPushed}</td>`).join('')}
+    </tr>
+  `;
+
+  finalTable.innerHTML += totalMarksRow + penniesPushedRow;
+}
     function renderScoreboard(tableId) {
         const table = document.getElementById(tableId);
         const header = [
