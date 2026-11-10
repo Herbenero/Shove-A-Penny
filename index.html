@@ -13,27 +13,24 @@
             --white: #ffffff;
             --success: #2ec4b6;
         }
-
         body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-    background-color: var(--bg);
-    background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('ShoveaPenny4.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: var(--ink);
-    padding: 18px;
-    min-height: 100vh;
-}
-
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            background-color: var(--bg);
+            background-image: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url('ShoveaPenny4.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: var(--ink);
+            padding: 18px;
+            min-height: 100vh;
+        }
         .container {
-  width: 100%;
-  max-width: 850px;
-  margin: 0 auto;
-}
-
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+        }
         .header-title-container {
             display: flex;
             align-items: center;
@@ -42,33 +39,27 @@
             margin-bottom: 20px;
         }
         .player-list-setup ol li {
-  color: var(--accent-color);
-  font-weight: bold;
-}
-
+            color: var(--accent-color);
+            font-weight: bold;
+        }
         .title-logo {
             height: 48px;
             width: auto;
             object-fit: contain;
         }
-
         .logo-container {
             display: none;
         }
-
         h1, h2, h3 {
             color: var(--accent-color);
             margin-top: 5px;
         }
-
         .setup-screen, .game-screen, .winner-screen {
             display: none;
         }
-
         .active {
             display: block;
         }
-
         input[type="text"], select {
             padding: 10px;
             width: 60%;
@@ -80,18 +71,15 @@
             margin-bottom: 10px;
             box-sizing: border-box;
         }
-
         .setup-option {
             margin: 15px 0;
         }
-
         .setup-option label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: var(--accent-color);
         }
-
         button {
             background-color: var(--accent-color);
             color: black;
@@ -104,24 +92,20 @@
             transition: 0.2s ease;
             margin: 5px;
         }
-
         button:hover {
             opacity: 0.9;
             transform: scale(1.02);
         }
-
         button:disabled {
             cursor: not-allowed;
             opacity: 0.45;
             transform: none;
         }
-
         .player-list-setup {
             margin: 15px 0;
             text-align: left;
             display: inline-block;
         }
-
         /* Game Interface Layout */
         .turn-indicator {
             background-color: #151c24;
@@ -130,61 +114,46 @@
             margin-bottom: 20px;
             border-left: 5px solid var(--accent-color);
         }
-
         .dart-dots {
             display: inline-flex;
             gap: 10px;
             margin-top: 5px;
         }
-
         .dot {
             width: 15px;
             height: 15px;
             border-radius: 50%;
             background-color: #444;
         }
-
-       .dot.active {
-    background-color: var(--success);
-    box-shadow: 0 0 8px var(--success);
-}
-
+        .dot.active {
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
         /* Scoreboard Grid */
         .grid-container {
             overflow-x: auto;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             background-color: #151c24;
         }
-
         th, td {
             border: 1px solid #333;
             padding: 12px 8px;
             text-align: center;
         }
-
         th {
             background-color: #0b0c10;
             color: var(--accent-color);
         }
-
         .current-player-col {
             background-color: rgba(255, 159, 28, 0.1);
         }
-
-      .closed-cell, td {
-    /* If you want all active hit marks to be teal, ensure your closed/hit color uses var(--success) */
-}
-
-/* Specifically target the dot marks inside the table cells */
-td {
-    color: var(--success);
-}
-
+        td {
+            color: var(--success);
+        }
         .game-actions {
             display: flex;
             justify-content: center;
@@ -192,7 +161,6 @@ td {
             gap: 8px;
             margin-top: 16px;
         }
-
         /* Input Controls */
         .input-pad {
             display: grid;
@@ -201,47 +169,40 @@ td {
             margin: 20px 0;
         }
         .input-pad button.undo-grid-btn {
-  grid-column: span 4;
-  background-color: var(--success);
-  color: black;
-  font-weight: bold;
-}
-
+            grid-column: span 4;
+            background-color: var(--success);
+            color: black;
+            font-weight: bold;
+        }
         .input-pad button {
             background-color: #2c3540;
             color: white;
             padding: 15px 5px;
             font-size: 18px;
         }
-
         .input-pad button.bullseye {
             grid-column: span 2;
             background-color: #8b0000;
         }
-
         .input-pad button.miss {
             grid-column: span 2;
             background-color: #444;
         }
-
         .multiplier-select {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-bottom: 15px;
         }
-
         .mult-btn {
             flex: 1;
             background-color: #444;
             color: white;
         }
-
         .mult-btn.selected {
             background-color: var(--accent-color);
             color: black;
         }
-
         .shove-alert {
             background-color: #4a154b;
             color: white;
@@ -252,7 +213,6 @@ td {
             font-weight: bold;
             animation: flash 0.5s alternate infinite;
         }
-
         @keyframes flash {
             from { opacity: 0.8; }
             to { opacity: 1; }
@@ -261,408 +221,399 @@ td {
 </head>
 <body>
 
-<div class="container">
-    <div class="header-title-container">
-        <img src="ShoveaPenny4.png" alt="Shove a Penny Logo" class="title-logo">
-        <h1>Shove a Penny</h1>
-    </div>
-
-    <!-- Setup Screen -->
-    <div id="setup-screen" class="setup-screen active">
-        <h2>Game Setup</h2>
-        
-        <div class="setup-option">
-            <label for="board-type-select">Board Type:</label>
-            <select id="board-type-select">
-                <option value="basic">Basic Board</option>
-                <option value="quad">Quad Board</option>
-            </select>
-        </div>
-        <div class="player-list-setup">
-    <h3>Players Joined:</h3>
-    <ol id="player-list-ol"></ol>
-    <!-- Add this button -->
-    <button onclick="shufflePlayers()" style="background-color: #2c3540; color: white; font-size: 14px; padding: 6px 12px; margin-top: 8px;">🔀 Shuffle Order</button>
-</div>
-
-        <div>
-            <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off">
-            <button onclick="addPlayer()">Add Player</button>
+    <div class="container">
+        <div class="header-title-container">
+            <img src="ShoveaPenny4.png" alt="Shove a Penny Logo" class="title-logo">
+            <h1>Shove a Penny</h1>
         </div>
 
-        <div class="player-list-setup">
-            <h3>Players Joined:</h3>
-            <ol id="player-list-ol"></ol>
-        </div>
-        <br>
-        <button id="start-game-btn" onclick="startGame()" style="font-size: 20px; padding: 15px 30px; display:none;">Start Game</button>
-    </div>
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="setup-screen active">
+            <h2>Game Setup</h2>
+            <div class="setup-option">
+                <label for="board-type-select">Board Type:</label>
+                <select id="board-type-select">
+                    <option value="basic">Basic Board</option>
+                    <option value="quad">Quad Board</option>
+                </select>
+            </div>
+            
+            <!-- Randomization Option Checkbox -->
+            <div class="setup-option">
+                <label style="display: inline-flex; align-items: center; cursor: pointer; color: white; font-weight: normal;">
+                    <input type="checkbox" id="shuffle-order-checkbox" style="width: auto; margin-right: 8px;"> 
+                    <span style="color: var(--accent-color); font-weight: bold;">Randomize Player Order on Start</span>
+                </label>
+            </div>
 
-    <!-- Game Screen -->
-    <div id="game-screen" class="game-screen">
-        <div class="turn-indicator">
-            <h2 id="current-player-display">Player's Turn</h2>
             <div>
-  <span style="color: var(--success); font-weight: bold;">Dart:</span>
-  <div class="dart-dots">
-    <div id="dot1" class="dot active"></div>
-    <div id="dot2" class="dot active"></div>
-    <div id="dot3" class="dot active"></div>
-  </div>
-</div>
-            <div id="shove-alert" class="shove-alert"></div>
+                <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off">
+                <button onclick="addPlayer()">Add Player</button>
+            </div>
+            <div class="player-list-setup">
+                <h3>Players Joined:</h3>
+                <ol id="player-list-ol"></ol>
+            </div>
+            <br>
+            <button id="start-game-btn" onclick="startGame()" style="font-size: 20px; padding: 15px 30px; display:none;">Start Game</button>
         </div>
 
-        <div class="multiplier-select">
-            <button id="m1" class="mult-btn selected" onclick="setMultiplier(1)">Single</button>
-            <button id="m2" class="mult-btn" onclick="setMultiplier(2)">Double</button>
-            <button id="m3" class="mult-btn" onclick="setMultiplier(3)">Triple</button>
-            <button id="m4" class="mult-btn" onclick="setMultiplier(4)" style="display: none;">Quad</button>
+        <!-- Game Screen -->
+        <div id="game-screen" class="game-screen">
+            <div class="turn-indicator">
+                <h2 id="current-player-display">Player's Turn</h2>
+                <div>
+                    <span style="color: var(--success); font-weight: bold;">Dart:</span>
+                    <div class="dart-dots">
+                        <div id="dot1" class="dot active"></div>
+                        <div id="dot2" class="dot active"></div>
+                        <div id="dot3" class="dot active"></div>
+                    </div>
+                </div>
+                <div id="shove-alert" class="shove-alert"></div>
+            </div>
+
+            <div class="multiplier-select">
+                <button id="m1" class="mult-btn selected" onclick="setMultiplier(1)">Single</button>
+                <button id="m2" class="mult-btn" onclick="setMultiplier(2)">Double</button>
+                <button id="m3" class="mult-btn" onclick="setMultiplier(3)">Triple</button>
+                <button id="m4" class="mult-btn" onclick="setMultiplier(4)" style="display: none;">Quad</button>
+            </div>
+
+            <div class="input-pad" id="hit-buttons-container"></div>
+
+            <h3>Scoreboard</h3>
+            <p style="font-size: 13px; color: #888;">(Target closes at 3 hits. Extra hits shove to the next open player!)</p>
+            <div class="grid-container">
+                <table id="scoreboard-table"></table>
+            </div>
+
+            <div class="game-actions">
+                <button onclick="resetGame()" style="background-color: #444; color: white;">Restart Game</button>
+            </div>
         </div>
 
-        <div class="input-pad" id="hit-buttons-container"></div>
-
-        <h3>Scoreboard</h3>
-        <p style="font-size: 13px; color: #888;">(Target closes at 3 hits. Extra hits shove to the next open player!)</p>
-        <div class="grid-container">
-            <table id="scoreboard-table"></table>
-        </div>
-
-        <div class="game-actions">
-                        <button onclick="resetGame()" style="background-color: #444; color: white;">Restart Game</button>
+        <!-- Winner Screen -->
+        <div id="winner-screen" class="winner-screen">
+            <h1 style="font-size: 45px; color: var(--success);">🏆 Winner! 🏆</h1>
+            <h2 id="winner-name-display" style="font-size: 32px; color: white;">Player</h2>
+            <p>Has successfully shoved all their pennies and closed all targets!</p>
+            
+            <h3>Final Scoreboard</h3>
+            <div class="grid-container">
+                <table id="final-scoreboard-table"></table>
+            </div>
+            <br>
+            <button onclick="undoLastScore()" style="background-color: #2ec4b6; color: black; font-size: 20px; padding: 15px 30px;">Undo Last Score</button>
+            <button onclick="resetGame()" style="font-size: 20px; padding: 15px 30px;">Play Again</button>
         </div>
     </div>
 
-    <!-- Winner Screen -->
-    <div id="winner-screen" class="winner-screen">
-        <h1 style="font-size: 45px; color: var(--success);">🏆 Winner! 🏆</h1>
-        <h2 id="winner-name-display" style="font-size: 32px; color: white;">Player</h2>
-        <p>Has successfully shoved all their pennies and closed all targets!</p>
+    <script>
+        // Game Rules Config
+        const TARGETS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'B'];
+        const MAX_HITS = 3;
+        
+        let players = [];
+        let currentPlayerIndex = 0;
+        let currentDart = 1;
+        let selectedMultiplier = 1;
+        let boardType = 'basic';
+        let history = [];
+        let shoveMessage = '';
 
-        <h3>Final Scoreboard</h3>
-        <div class="grid-container">
-            <table id="final-scoreboard-table"></table>
-        </div>
-        <br>
-        <button onclick="undoLastScore()" style="background-color: #2ec4b6; color: black; font-size: 20px; padding: 15px 30px;">Undo Last Score</button>
-        <button onclick="resetGame()" style="font-size: 20px; padding: 15px 30px;">Play Again</button>
-    </div>
-</div>
+        function addPlayer() {
+            const input = document.getElementById('player-name-input');
+            const name = input.value.trim();
+            if (!name) return;
 
-<script>
-    // Game Rules Config
-    // Updated targets array: starts with 5, ends with 20, keeping Bull ('B') at the end
-const TARGETS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'B'];
-    const MAX_HITS = 3;
+            players.push({
+                name,
+                scores: Object.fromEntries(TARGETS.map(target => [target, 0])),
+                totalMarks: 0,
+                penniesPushed: 0,
+                penniesReceived: 0
+            });
 
-    let players = [];
-    let currentPlayerIndex = 0;
-    let currentDart = 1;
-    let selectedMultiplier = 1;
-    let boardType = 'basic';
-    let history = [];
-    let shoveMessage = '';
-
-    function addPlayer() {
-        const input = document.getElementById('player-name-input');
-        const name = input.value.trim();
-        if (!name) return;
-
-        players.push({
-            name,
-            scores: Object.fromEntries(TARGETS.map(target => [target, 0])),
-            totalMarks: 0,
-            penniesPushed: 0,
-            penniesReceived: 0
-        });
-
-        input.value = '';
-        renderSetupPlayers();
-        document.getElementById('start-game-btn').style.display = players.length >= 2 ? 'inline-block' : 'none';
-        input.focus();
-    }
-
-    function renderSetupPlayers() {
-        const list = document.getElementById('player-list-ol');
-        list.innerHTML = players.map(player => `<li>${escapeHtml(player.name)}</li>`).join('');
-    }
-    function shufflePlayers() {
-    if (players.length < 2) return;
-    
-    // Fisher-Yates shuffle algorithm
-    for (let i = players.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [players[i], players[j]] = [players[j], players[i]];
-    }
-    
-    // Refresh the visual list on the setup screen
-    renderSetupPlayers();
-}
-
-    function startGame() {
-        if (players.length < 2) return;
-
-        boardType = document.getElementById('board-type-select').value;
-        currentPlayerIndex = 0;
-        currentDart = 1;
-        selectedMultiplier = 1;
-        history = [];
-
-        // Show/hide Quad multiplier button
-        document.getElementById('m4').style.display = boardType === 'quad' ? 'block' : 'none';
-
-        document.getElementById('setup-screen').classList.remove('active');
-        document.getElementById('winner-screen').classList.remove('active');
-        document.getElementById('game-screen').classList.add('active');
-
-        buildHitButtons();
-        setMultiplier(1);
-        updateGameView();
-    }
-
-    function buildHitButtons() {
-  const container = document.getElementById('hit-buttons-container');
-  container.innerHTML = TARGETS.map(target => {
-    const className = target === 'B' ? ' class="bullseye"' : '';
-    const label = target === 'B' ? 'Bull' : target;
-    return `<button${className} onclick="recordHit('${target}')">${label}</button>`;
-  }).join('') 
-  + '<button class="miss" onclick="recordMiss()">Miss</button>'
-  + '<button id="undo-score-btn" class="undo-grid-btn" onclick="undoLastScore()" disabled>Undo Score</button>';
-}
-
-    function setMultiplier(multiplier) {
-        selectedMultiplier = multiplier;
-        const maxMult = boardType === 'quad' ? 4 : 3;
-        for (let i = 1; i <= maxMult; i++) {
-            const btn = document.getElementById(`m${i}`);
-            if (btn) btn.classList.toggle('selected', i === multiplier);
-        }
-    }
-
-    function applyHits(playerIndex, target, hits) {
-        const player = players[playerIndex];
-        const currentHits = player.scores[target];
-        const room = MAX_HITS - currentHits;
-        const keptHits = Math.min(room, hits);
-        const extraHits = hits - keptHits;
-
-        player.totalMarks += keptHits;
-        player.scores[target] += keptHits;
-
-        if (extraHits > 0) {
-            shoveHits(playerIndex, target, extraHits);
-        }
-    }
-
-    function shoveHits(fromPlayerIndex, target, hits) {
-        const shoveSourcePlayer = players[fromPlayerIndex];
-        const shovedTo = [];
-        let remaining = hits;
-
-        for (let offset = 1; offset < players.length && remaining > 0; offset++) {
-            const nextIndex = (fromPlayerIndex + offset) % players.length;
-            const nextPlayer = players[nextIndex];
-            const room = MAX_HITS - nextPlayer.scores[target];
-
-            if (room <= 0) continue;
-
-            const given = Math.min(room, remaining);
-            nextPlayer.scores[target] += given;
-
-            shoveSourcePlayer.penniesPushed += given;
-            nextPlayer.penniesReceived += given;
-
-            remaining -= given;
-            shovedTo.push(`${given} to ${nextPlayer.name}`);
+            input.value = '';
+            renderSetupPlayers();
+            document.getElementById('start-game-btn').style.display = players.length >= 2 ? 'inline-block' : 'none';
+            input.focus();
         }
 
-        if (shovedTo.length) {
-            shoveMessage = `Shoved ${target}: ${shovedTo.join(', ')}`;
-        }
-    }
-
-    function recordHit(target) {
-        shoveMessage = '';
-        saveHistory();
-        applyHits(currentPlayerIndex, target, selectedMultiplier);
-        completeDart();
-    }
-
-    function recordMiss() {
-        shoveMessage = '';
-        saveHistory();
-        completeDart();
-    }
-
-    function completeDart() {
-        if (hasWon(players[currentPlayerIndex])) {
-            showWinner(players[currentPlayerIndex]);
-            return;
+        function renderSetupPlayers() {
+            const list = document.getElementById('player-list-ol');
+            list.innerHTML = players.map(player => `<li>${escapeHtml(player.name)}</li>`).join('');
         }
 
-        if (currentDart >= 3) {
+        function startGame() {
+            if (players.length < 2) return;
+
+            // Check if randomization option is enabled
+            const shouldShuffle = document.getElementById('shuffle-order-checkbox').checked;
+            if (shouldShuffle) {
+                // Fisher-Yates shuffle algorithm
+                for (let i = players.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [players[i], players[j]] = [players[j], players[i]];
+                }
+            }
+
+            boardType = document.getElementById('board-type-select').value;
+            currentPlayerIndex = 0;
             currentDart = 1;
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        } else {
-            currentDart++;
+            selectedMultiplier = 1;
+            history = []; 
+
+            // Show/hide Quad multiplier button
+            document.getElementById('m4').style.display = boardType === 'quad' ? 'block' : 'none';
+            
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('winner-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            buildHitButtons();
+            setMultiplier(1);
+            updateGameView();
         }
 
-        setMultiplier(1);
-        updateGameView();
-    }
+        function buildHitButtons() {
+            const container = document.getElementById('hit-buttons-container');
+            container.innerHTML = TARGETS.map(target => {
+                const className = target === 'B' ? ' class="bullseye"' : '';
+                const label = target === 'B' ? 'Bull' : target;
+                return `<button${className} onclick="recordHit('${target}')">${label}</button>`;
+            }).join('') + 
+            '<button class="miss" onclick="recordMiss()">Miss</button>' +
+            '<button id="undo-score-btn" class="undo-grid-btn" onclick="undoLastScore()" disabled>Undo Score</button>';
+        }
 
-    function clonePlayers(playerList) {
-        return playerList.map(player => ({
-            name: player.name,
-            scores: { ...player.scores },
-            totalMarks: player.totalMarks,
-            penniesPushed: player.penniesPushed,
-            penniesReceived: player.penniesReceived
-        }));
-    }
+        function setMultiplier(multiplier) {
+            selectedMultiplier = multiplier;
+            const maxMult = boardType === 'quad' ? 4 : 3;
+            for (let i = 1; i <= maxMult; i++) {
+                const btn = document.getElementById(`m${i}`);
+                if (btn) btn.classList.toggle('selected', i === multiplier);
+            }
+        }
 
-    function saveHistory() {
-        history.push({
-            players: clonePlayers(players),
-            currentPlayerIndex,
-            currentDart,
-            selectedMultiplier,
-            boardType
-        });
-    }
+        function applyHits(playerIndex, target, hits) {
+            const player = players[playerIndex];
+            const currentHits = player.scores[target];
+            const room = MAX_HITS - currentHits;
+            const keptHits = Math.min(room, hits);
+            const extraHits = hits - keptHits;
 
-    function undoLastScore() {
-        const previous = history.pop();
-        if (!previous) return;
+            player.totalMarks += keptHits;
+            player.scores[target] += keptHits;
 
-        players = previous.players;
-        currentPlayerIndex = previous.currentPlayerIndex;
-        currentDart = previous.currentDart;
-        selectedMultiplier = previous.selectedMultiplier;
-        boardType = previous.boardType;
-        shoveMessage = '';
+            if (extraHits > 0) {
+                shoveHits(playerIndex, target, extraHits);
+            }
+        }
 
-        document.getElementById('m4').style.display = boardType === 'quad' ? 'block' : 'none';
+        function shoveHits(fromPlayerIndex, target, hits) {
+            const shoveSourcePlayer = players[fromPlayerIndex];
+            const shovedTo = [];
+            let remaining = hits;
 
-        document.getElementById('winner-screen').classList.remove('active');
-        document.getElementById('setup-screen').classList.remove('active');
-        document.getElementById('game-screen').classList.add('active');
+            for (let offset = 1; offset < players.length && remaining > 0; offset++) {
+                const nextIndex = (fromPlayerIndex + offset) % players.length;
+                const nextPlayer = players[nextIndex];
+                const room = MAX_HITS - nextPlayer.scores[target];
+                if (room <= 0) continue;
 
-        updateGameView();
-    }
+                const given = Math.min(room, remaining);
+                nextPlayer.scores[target] += given;
+                shoveSourcePlayer.penniesPushed += given;
+                nextPlayer.penniesReceived += given;
+                remaining -= given;
+                shovedTo.push(`${given} to ${nextPlayer.name}`);
+            }
 
-    function updateGameView() {
-        document.getElementById('current-player-display').textContent = `${players[currentPlayerIndex].name}'s Turn`;
-        const alert = document.getElementById('shove-alert');
-        alert.textContent = shoveMessage;
-        alert.style.display = shoveMessage ? 'block' : 'none';
+            if (shovedTo.length) {
+                shoveMessage = `Shoved ${target}: ${shovedTo.join(', ')}`;
+            }
+        }
 
-        document.getElementById('undo-score-btn').disabled = history.length === 0;
+        function recordHit(target) {
+            shoveMessage = '';
+            saveHistory();
+            applyHits(currentPlayerIndex, target, selectedMultiplier);
+            completeDart();
+        }
 
-        [1, 2, 3].forEach(value => {
-            document.getElementById(`dot${value}`).classList.toggle('active', value >= currentDart);
-        });
+        function recordMiss() {
+            shoveMessage = '';
+            saveHistory();
+            completeDart();
+        }
 
-        setMultiplier(selectedMultiplier);
-        renderScoreboard('scoreboard-table');
-    }
+        function completeDart() {
+            if (hasWon(players[currentPlayerIndex])) {
+                showWinner(players[currentPlayerIndex]);
+                return;
+            }
 
-    function showWinner(player) {
-        document.getElementById('game-screen').classList.remove('active');
-        document.getElementById('winner-screen').classList.add('active');
-        document.getElementById('winner-name-display').textContent = player.name;
+            if (currentDart >= 3) {
+                currentDart = 1;
+                currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            } else {
+                currentDart++;
+            }
+            setMultiplier(1);
+            updateGameView();
+        }
 
-        renderScoreboard('final-scoreboard-table');
+        function clonePlayers(playerList) {
+            return playerList.map(player => ({
+                name: player.name,
+                scores: { ...player.scores },
+                totalMarks: player.totalMarks,
+                penniesPushed: player.penniesPushed,
+                penniesReceived: player.penniesReceived
+            }));
+        }
 
-        const finalTable = document.getElementById('final-scoreboard-table');
-        const summaryHeaderRow = `
-            <tr style="border-top: 3px solid var(--accent-color); background-color: #0b0c10;">
-                <th>Stat Summary</th>
-                ${players.map(p => `<th style="color: var(--accent-color);">${escapeHtml(p.name)}</th>`).join('')}
-            </tr>
-        `;
-        const totalMarksRow = `
-            <tr style="font-weight: bold;">
-                <th>Total Marks</th>
-                ${players.map(p => `<td>${p.totalMarks}</td>`).join('')}
-            </tr>
-        `;
-        const penniesPushedRow = `
-            <tr style="font-weight: bold; color: var(--accent-color);">
-                <th>Pennies Pushed</th>
-                ${players.map(p => `<td>${p.penniesPushed}</td>`).join('')}
-            </tr>
-        `;
-        const penniesReceivedRow = `
-            <tr style="font-weight: bold; color: var(--success);">
-                <th>Pennies Received</th>
-                ${players.map(p => `<td>${p.penniesReceived}</td>`).join('')}
-            </tr>
-        `;
+        function saveHistory() {
+            history.push({
+                players: clonePlayers(players),
+                currentPlayerIndex,
+                currentDart,
+                selectedMultiplier,
+                boardType
+            });
+        }
 
-        finalTable.innerHTML += summaryHeaderRow + totalMarksRow + penniesPushedRow + penniesReceivedRow;
-    }
+        function undoLastScore() {
+            const previous = history.pop();
+            if (!previous) return;
 
-    function renderScoreboard(tableId) {
-        const table = document.getElementById(tableId);
-        const header = [
-            '<tr><th>Target</th>',
-            ...players.map((player, index) => `<th class="${index === currentPlayerIndex ? 'current-player-col' : ''}">${escapeHtml(player.name)}</th>`),
-            '</tr>'
-        ].join('');
+            players = previous.players;
+            currentPlayerIndex = previous.currentPlayerIndex;
+            currentDart = previous.currentDart;
+            selectedMultiplier = previous.selectedMultiplier;
+            boardType = previous.boardType;
+            shoveMessage = '';
 
-        const rows = TARGETS.map(target => {
-            const label = target === 'B' ? 'Bull' : target;
-            const cells = players.map((player, index) => {
-                const hits = player.scores[target];
-                const marks = hits >= MAX_HITS ? 'Closed' : '●'.repeat(hits);
-                const classes = [
-                    hits >= MAX_HITS ? 'closed-cell' : '',
-                    index === currentPlayerIndex ? 'current-player-col' : ''
-                ].filter(Boolean).join(' ');
-                return `<td class="${classes}">${marks || '-'}</td>`;
+            document.getElementById('m4').style.display = boardType === 'quad' ? 'block' : 'none';
+            document.getElementById('winner-screen').classList.remove('active');
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            updateGameView();
+        }
+
+        function updateGameView() {
+            document.getElementById('current-player-display').textContent = `${players[currentPlayerIndex].name}'s Turn`;
+            
+            const alert = document.getElementById('shove-alert');
+            alert.textContent = shoveMessage;
+            alert.style.display = shoveMessage ? 'block' : 'none';
+
+            document.getElementById('undo-score-btn').disabled = history.length === 0;
+
+            [1, 2, 3].forEach(value => {
+                document.getElementById(`dot${value}`).classList.toggle('active', value >= currentDart);
+            });
+
+            setMultiplier(selectedMultiplier);
+            renderScoreboard('scoreboard-table');
+        }
+
+        function showWinner(player) {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('winner-screen').classList.add('active');
+            document.getElementById('winner-name-display').textContent = player.name;
+            renderScoreboard('final-scoreboard-table');
+
+            const finalTable = document.getElementById('final-scoreboard-table');
+            const summaryHeaderRow = `
+                <tr style="border-top: 3px solid var(--accent-color); background-color: #0b0c10;">
+                    <th>Stat Summary</th>
+                    ${players.map(p => `<th style="color: var(--accent-color);">${escapeHtml(p.name)}</th>`).join('')}
+                </tr>
+            `;
+            const totalMarksRow = `
+                <tr style="font-weight: bold;">
+                    <th>Total Marks</th>
+                    ${players.map(p => `<td>${p.totalMarks}</td>`).join('')}
+                </tr>
+            `;
+            const penniesPushedRow = `
+                <tr style="font-weight: bold; color: var(--accent-color);">
+                    <th>Pennies Pushed</th>
+                    ${players.map(p => `<td>${p.penniesPushed}</td>`).join('')}
+                </tr>
+            `;
+            const penniesReceivedRow = `
+                <tr style="font-weight: bold; color: var(--success);">
+                    <th>Pennies Received</th>
+                    ${players.map(p => `<td>${p.penniesReceived}</td>`).join('')}
+                </tr>
+            `;
+            finalTable.innerHTML += summaryHeaderRow + totalMarksRow + penniesPushedRow + penniesReceivedRow;
+        }
+
+        function renderScoreboard(tableId) {
+            const table = document.getElementById(tableId);
+            const header = [
+                '<tr><th>Target</th>',
+                ...players.map((player, index) => `<th class="${index === currentPlayerIndex ? 'current-player-col' : ''}">${escapeHtml(player.name)}</th>`),
+                '</tr>'
+            ].join('');
+
+            const rows = TARGETS.map(target => {
+                const label = target === 'B' ? 'Bull' : target;
+                const cells = players.map((player, index) => {
+                    const hits = player.scores[target];
+                    const marks = hits >= MAX_HITS ? 'Closed' : '●'.repeat(hits);
+                    const classes = [
+                        hits >= MAX_HITS ? 'closed-cell' : '',
+                        index === currentPlayerIndex ? 'current-player-col' : ''
+                    ].filter(Boolean).join(' ');
+                    return `<td class="${classes}">${marks || '-'}</td>`;
+                }).join('');
+                return `<tr><th>${label}</th>${cells}</tr>`;
             }).join('');
-            return `<tr><th>${label}</th>${cells}</tr>`;
-        }).join('');
 
-        table.innerHTML = header + rows;
-    }
-
-    function hasWon(player) {
-        return TARGETS.every(target => player.scores[target] >= MAX_HITS);
-    }
-
-    function resetGame() {
-        players = [];
-        currentPlayerIndex = 0;
-        currentDart = 1;
-        selectedMultiplier = 1;
-        boardType = 'basic';
-        history = [];
-        shoveMessage = '';
-
-        document.getElementById('m4').style.display = 'none';
-        document.getElementById('game-screen').classList.remove('active');
-        document.getElementById('winner-screen').classList.remove('active');
-        document.getElementById('setup-screen').classList.add('active');
-        document.getElementById('player-name-input').value = '';
-        document.getElementById('player-list-ol').innerHTML = '';
-        document.getElementById('board-type-select').value = 'basic';
-        document.getElementById('start-game-btn').style.display = 'none';
-    }
-
-    function escapeHtml(value) {
-        const div = document.createElement('div');
-        div.textContent = value;
-        return div.innerHTML;
-    }
-
-    document.getElementById('player-name-input').addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-            addPlayer();
+            table.innerHTML = header + rows;
         }
-    });
-</script>
+
+        function hasWon(player) {
+            return TARGETS.every(target => player.scores[target] >= MAX_HITS);
+        }
+
+        function resetGame() {
+            players = [];
+            currentPlayerIndex = 0;
+            currentDart = 1;
+            selectedMultiplier = 1;
+            boardType = 'basic';
+            history = [];
+            shoveMessage = '';
+
+            document.getElementById('m4').style.display = 'none';
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('winner-screen').classList.remove('active');
+            document.getElementById('setup-screen').classList.add('active');
+            document.getElementById('player-name-input').value = '';
+            document.getElementById('player-list-ol').innerHTML = '';
+            document.getElementById('board-type-select').value = 'basic';
+            document.getElementById('start-game-btn').style.display = 'none';
+            document.getElementById('shuffle-order-checkbox').checked = false;
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value;
+            return div.innerHTML;
+        }
+
+        document.getElementById('player-name-input').addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                addPlayer();
+            }
+        });
+    </script>
 </body>
 </html>
