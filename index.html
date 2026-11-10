@@ -278,6 +278,12 @@ td {
                 <option value="quad">Quad Board</option>
             </select>
         </div>
+        <div class="player-list-setup">
+    <h3>Players Joined:</h3>
+    <ol id="player-list-ol"></ol>
+    <!-- Add this button -->
+    <button onclick="shufflePlayers()" style="background-color: #2c3540; color: white; font-size: 14px; padding: 6px 12px; margin-top: 8px;">🔀 Shuffle Order</button>
+</div>
 
         <div>
             <input type="text" id="player-name-input" placeholder="Enter Player Name" autocomplete="off">
@@ -380,6 +386,18 @@ const TARGETS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 'B']
         const list = document.getElementById('player-list-ol');
         list.innerHTML = players.map(player => `<li>${escapeHtml(player.name)}</li>`).join('');
     }
+    function shufflePlayers() {
+    if (players.length < 2) return;
+    
+    // Fisher-Yates shuffle algorithm
+    for (let i = players.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [players[i], players[j]] = [players[j], players[i]];
+    }
+    
+    // Refresh the visual list on the setup screen
+    renderSetupPlayers();
+}
 
     function startGame() {
         if (players.length < 2) return;
