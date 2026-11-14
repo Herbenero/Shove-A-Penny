@@ -473,20 +473,20 @@
         return;
       }
 
-      const matchPayload = {
-        leagueName: selectedLeague,
-        event: "Shove a Penny",
-        timestamp: new Date().toISOString(),
-        players: players.map(p => ({
-          name: p.name,
-          score: p.totalMarks + p.penniesReceived,
-          subscores: {
-            "Marks": p.totalMarks,
-            "Pushed": p.penniesPushed,
-            "Received": p.penniesReceived
-          }
-        }))
-      };
+     const matchPayload = {
+      leagueName: selectedLeague,
+      event: "Shove a Penny",
+      timestamp: new Date().toISOString(),
+      players: players.map(p => ({
+        name: p.name,
+        score: p.totalMarks + p.penniesReceived,
+        subscores: {
+          "Marks": p.totalMarks,
+          "Pushed": p.penniesPushed,
+          "Received": p.penniesReceived
+        }
+      }))
+    };
 
       // Save to localStorage for instant pickup on Hellcastle-League
       localStorage.setItem("haalis_pending_match", JSON.stringify(matchPayload));
